@@ -27,3 +27,5 @@ The eight new bug-bash regression cases were run against the original implementa
 - **Release prerequisite:** GitHub Pages must be enabled (Source: GitHub Actions), and the game PRs merged. The bug bash found the public URL returning 404 because Pages was not enabled; this is a deployment blocker, not a gameplay fix.
 
 Dependency audit also found vulnerable development tooling in the initial scaffold. Vitest was upgraded to a patched release, the simulator's `vite-node` dependency made explicit, and ESLint's transitive `minimatch` constrained to a patched version. `npm audit` now reports **0 vulnerabilities**; lint, unit tests and E2E were rerun after these changes.
+
+The first E2E CI run failed before launching a browser: `ubuntu-latest` had moved to Ubuntu 26.04, unsupported by the pinned Playwright release. CI now uses the supported Ubuntu 24.04 runner explicitly instead of relying on a moving OS alias.
