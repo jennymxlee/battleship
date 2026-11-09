@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react'
 
-export function GameOverDialog({ won, onAgain }: { won: boolean; onAgain: () => void }) {
+export function GameOverDialog({ won, onAgain, onClose }: { won: boolean; onAgain: () => void; onClose: () => void }) {
   const ref = useRef<HTMLDivElement>(null)
   useEffect(() => {
     ref.current?.focus()
@@ -15,9 +15,22 @@ export function GameOverDialog({ won, onAgain }: { won: boolean; onAgain: () => 
         ref={ref}
         tabIndex={-1}
         onKeyDown={event => {
+          if (event.key === 'Escape') {
+            event.preventDefault()
+            onClose()
+            return
+          }
           if (event.key !== 'Tab') return
-          event.preventDefault()
-          ref.current?.querySelector('button')?.focus()
+          const buttons = ref.current?.querySelectorAll('button')
+          if (!buttons?.length) return
+          const first = buttons[0], last = buttons[buttons.length - 1]
+          if (event.shiftKey && (document.activeElement === first || document.activeElement === ref.current)) {
+            event.preventDefault()
+            last.focus()
+          } else if (!event.shiftKey && (document.activeElement === last || document.activeElement === ref.current)) {
+            event.preventDefault()
+            first.focus()
+          }
         }}
       >
         <p className="eyebrow">Mission complete</p>
@@ -30,6 +43,7 @@ export function GameOverDialog({ won, onAgain }: { won: boolean; onAgain: () => 
         <button className="primary" onClick={onAgain}>
           Play again
         </button>
+        <button onClick={onClose}>View boards</button>
       </div>
     </div>
   )

@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest'
-import { randomFleet } from './board'
+import { randomFleet, shipAt } from './board'
+import { allCoords } from './coords'
 import { gameReducer, initialGameState, type GameState } from './game'
 import { seededRng } from './rng'
 
@@ -70,6 +71,19 @@ describe('gameReducer', () => {
     }
     const playerEntries = state.log.filter((e) => e.by === 'player')
     expect(playerEntries.at(-1)).toMatchObject({ outcome: 'sunk', shipName: 'Destroyer' })
+  })
+
+  it('declares the AI the winner and rejects further actions', () => {
+    let state = startedGame(9)
+    const targets = state.playerBoard!.ships.flatMap(s => s.cells)
+    const misses = allCoords().filter(coord => !shipAt(state.aiBoard!, coord))
+    for (const coord of targets) {
+      state = gameReducer(state, { type: 'fire', by: 'player', coord: misses.shift()! })
+      state = gameReducer(state, { type: 'fire', by: 'ai', coord })
+    }
+    expect(state.phase).toBe('over')
+    expect(state.winner).toBe('ai')
+    expect(gameReducer(state, { type: 'fire', by: 'player', coord: misses[0] })).toBe(state)
   })
 
   it('derives ship cells from placements, ignoring tampered cells', () => {

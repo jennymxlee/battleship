@@ -27,7 +27,7 @@ export function Grid({
       onMouseLeave={() => onHover?.(null)}
     >
       <div role="row" className="grid-row">
-        <span className="axis" />
+        <span role="columnheader" aria-label="Coordinates" className="axis" />
         {Array.from({ length: 10 }, (_, col) => (
           <span role="columnheader" className="axis" key={col}>
             {columnLabel(col)}

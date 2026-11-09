@@ -268,7 +268,14 @@ input {
   padding: 8px 14px;
   margin: 20px 0 26px;
   color: var(--accent);
+  position: sticky;
+  top: 0;
+  z-index: 3;
+  background: #0b1d2e;
 }
+.turn-status small { display: block; color: var(--muted); }
+.change-difficulty { margin-bottom: 20px; }
+.game-over button { margin: 6px; }
 .board-caption {
   font-size: 0.8rem;
   margin: 0;
@@ -302,7 +309,7 @@ input {
 .move-log ol {
   max-height: 180px;
   overflow-y: auto;
-  padding-left: 24px;
+  padding-inline-start: 5ch;
   color: var(--muted);
   font-size: 0.85rem;
 }

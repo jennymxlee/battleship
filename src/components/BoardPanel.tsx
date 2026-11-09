@@ -16,7 +16,7 @@ export function BoardPanel({ board, own, disabled, reveal, fire }: BoardPanelPro
   return (
     <section className="panel board-panel">
       <h3>{title}</h3>
-      <p className="board-caption">{own ? 'Defend your home waters' : 'Select a square to fire'}</p>
+      <p className="board-caption">{own ? 'Your ships and incoming shots · read-only' : 'Select a square to fire'}</p>
       <Grid
         label={title}
         disabled={own || disabled}
