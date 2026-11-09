@@ -11,6 +11,16 @@ for (const difficulty of ['Easy', 'Medium', 'Hard']) {
     await expect(page.getByRole('heading', { name: 'Take your positions' })).toBeFocused()
     await page.getByRole('button', { name: 'Randomize' }).click()
     await page.getByRole('button', { name: /Start battle/ }).click()
+    const markerSpace = await page.getByRole('list', { name: 'Move log' }).evaluate(list => {
+      const style = getComputedStyle(list)
+      const context = document.createElement('canvas').getContext('2d')!
+      context.font = style.font
+      return {
+        available: parseFloat(style.paddingInlineStart),
+        required: context.measureText('200. ').width,
+      }
+    })
+    expect(markerSpace.available).toBeGreaterThanOrEqual(markerSpace.required)
     const enemy = page.getByRole('grid', { name: 'Enemy waters' })
     const own = page.getByRole('grid', { name: 'Your fleet' })
     let aiShots = 0

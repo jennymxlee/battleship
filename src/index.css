@@ -309,7 +309,7 @@ input {
 .move-log ol {
   max-height: 180px;
   overflow-y: auto;
-  padding-left: 24px;
+  padding-inline-start: 5ch;
   color: var(--muted);
   font-size: 0.85rem;
 }
