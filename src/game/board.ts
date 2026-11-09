@@ -83,9 +83,13 @@ export function randomOrientation(rng: Rng): Orientation {
   return randomInt(rng, 2) === 0 ? 'horizontal' : 'vertical'
 }
 
-export function createBoard(ships: PlacedShip[]): Board {
+/** Rebuilds ships from their placements so the board never trusts or shares caller-supplied `cells`. */
+export function createBoard(ships: readonly PlacedShip[]): Board {
   return {
-    ships,
+    ships: ships.reduce<PlacedShip[]>(
+      (placed, s) => placeShip(placed, { shipId: s.id, origin: { ...s.origin }, orientation: s.orientation }),
+      [],
+    ),
     shots: Array.from({ length: BOARD_SIZE }, () => Array<ShotMark>(BOARD_SIZE).fill(null)),
   }
 }

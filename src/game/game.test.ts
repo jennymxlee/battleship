@@ -72,6 +72,25 @@ describe('gameReducer', () => {
     expect(playerEntries.at(-1)).toMatchObject({ outcome: 'sunk', shipName: 'Destroyer' })
   })
 
+  it('derives ship cells from placements, ignoring tampered cells', () => {
+    const rng = seededRng(5)
+    const playerShips = randomFleet(rng)
+    const tampered = playerShips.map((s) => ({ ...s, cells: [] }))
+    const state = gameReducer(initialGameState, { type: 'start', playerShips: tampered, aiShips: randomFleet(rng) })
+    expect(state.playerBoard!.ships.map((s) => s.cells)).toEqual(playerShips.map((s) => s.cells))
+  })
+
+  it('is not affected by later edits to the fleet passed to start', () => {
+    const rng = seededRng(6)
+    const aiShips = randomFleet(rng)
+    const state = gameReducer(initialGameState, { type: 'start', playerShips: randomFleet(rng), aiShips })
+    const before = structuredClone(state.aiBoard!.ships)
+    aiShips[0].cells[0].row = 99
+    aiShips[0].origin.row = 99
+    aiShips.pop()
+    expect(state.aiBoard!.ships).toEqual(before)
+  })
+
   it('reset returns to placement', () => {
     expect(gameReducer(startedGame(), { type: 'reset' })).toBe(initialGameState)
   })
