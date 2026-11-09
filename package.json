@@ -10,7 +10,8 @@
     "preview": "vite preview",
     "test": "vitest run --passWithNoTests",
     "test:watch": "vitest",
-    "typecheck": "tsc -b"
+    "typecheck": "tsc -b",
+    "sim": "vite-node src/game/ai/sim.ts"
   },
   "dependencies": {
     "react": "^19.1.0",
