@@ -1,5 +1,5 @@
 import type { LogEntry } from '../game'
-import { announcement } from './announcement'
+import { describeMove } from './announcement'
 
 export function MoveLog({ entries }: { entries: LogEntry[] }) {
   return (
@@ -10,7 +10,7 @@ export function MoveLog({ entries }: { entries: LogEntry[] }) {
       <ol aria-label="Move log">
         {[...entries].reverse().map((entry, i) => (
           <li key={entries.length - i}>
-            {entry.by === 'player' ? 'You' : 'Enemy'} · {announcement(entry)}
+            {entry.by === 'player' ? 'You' : 'Enemy'} · {describeMove(entry)}
           </li>
         ))}
       </ol>
