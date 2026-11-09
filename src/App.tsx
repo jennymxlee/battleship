@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useLayoutEffect, useRef, useState } from 'react'
 import type { Difficulty, Rng } from './game'
 import { useGame } from './hooks/useGame'
 import { DifficultyPicker } from './components/DifficultyPicker'
@@ -9,12 +9,25 @@ export default function App({ rng = Math.random, aiDelayMs = 600 }: { rng?: Rng;
   const [difficulty, setDifficulty] = useState<Difficulty>('medium')
   const [setup, setSetup] = useState(true)
   const game = useGame(difficulty, rng, aiDelayMs)
-  let screen = <BattleScreen {...game} onRestart={game.reset} />
+  const content = useRef<HTMLDivElement>(null)
+  const screen = setup ? 'setup' : game.state.phase === 'placement' ? 'placement' : 'battle'
+  useLayoutEffect(() => {
+    const heading = content.current?.querySelector('h2')
+    heading?.setAttribute('tabindex', '-1')
+    heading?.focus({ preventScroll: true })
+    window.scrollTo({ top: 0, left: 0, behavior: 'instant' })
+  }, [screen])
+  let view = <BattleScreen {...game} onRestart={game.reset} />
   if (game.state.phase === 'placement') {
-    screen = <PlacementScreen rng={rng} onStart={game.start} />
+    view = (
+      <>
+        <button className="change-difficulty" onClick={() => setSetup(true)}>Change difficulty</button>
+        <PlacementScreen rng={rng} onStart={game.start} />
+      </>
+    )
   }
   if (setup) {
-    screen = (
+    view = (
       <DifficultyPicker value={difficulty} onChange={setDifficulty} onContinue={() => setSetup(false)} />
     )
   }
@@ -29,7 +42,7 @@ export default function App({ rng = Math.random, aiDelayMs = 600 }: { rng?: Rng;
         </div>
         <span className="mission-tag">{setup ? 'Mission control' : `${difficulty} opponent`}</span>
       </header>
-      {screen}
+      <div ref={content}>{view}</div>
       <footer>
         Command the waters.<span>• miss &nbsp; ✕ hit &nbsp; ▧ sunk</span>
       </footer>

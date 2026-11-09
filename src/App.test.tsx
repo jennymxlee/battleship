@@ -1,13 +1,19 @@
 import { StrictMode } from 'react'
 import { act, cleanup, fireEvent, render, screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import { afterEach, describe, expect, it, vi } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import App from './App'
 import { randomFleet, seededRng } from './game'
+
+beforeEach(() => {
+  vi.spyOn(window, 'scrollTo').mockImplementation(() => {})
+  vi.spyOn(window, 'confirm').mockReturnValue(true)
+})
 
 afterEach(() => {
   cleanup()
   vi.useRealTimers()
+  vi.restoreAllMocks()
 })
 
 function begin(strict = false) {
@@ -17,6 +23,7 @@ function begin(strict = false) {
   fireEvent.click(screen.getByRole('button', { name: /Continue/ }))
   fireEvent.click(screen.getByRole('button', { name: 'Randomize' }))
   fireEvent.click(screen.getByRole('button', { name: /Start battle/ }))
+  act(() => vi.advanceTimersByTime(0))
 }
 function enemyCells() {
   return within(screen.getByRole('grid', { name: 'Enemy waters' })).getAllByRole('button')
@@ -105,8 +112,8 @@ describe('game UI', () => {
       reply()
     }
     expect(screen.getByRole('dialog', { name: 'You win!' })).toHaveFocus()
-    expect(screen.getByRole('button', { name: 'Play again' })).toBeInTheDocument()
-    fireEvent.click(screen.getByRole('button', { name: 'Play again' }))
+    expect(within(screen.getByRole('dialog')).getByRole('button', { name: 'Play again' })).toBeInTheDocument()
+    fireEvent.click(within(screen.getByRole('dialog')).getByRole('button', { name: 'Play again' }))
     expect(screen.getByRole('grid', { name: 'Placement board' })).toBeInTheDocument()
     expect(screen.getByText('medium opponent')).toBeInTheDocument()
     expect(screen.getByRole('button', { name: /Start battle/ })).toBeDisabled()
