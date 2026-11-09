@@ -53,6 +53,8 @@ Requires Node 22.
 npm install
 npm run dev     # http://localhost:5173/battleship/
 npm test        # unit + component tests (Vitest, Testing Library)
+npx playwright install chromium  # one-time browser install for E2E
+npm run test:e2e # full games at all levels, desktop + 360px touch (Playwright)
 npm run lint
 npm run build
 npm run sim     # AI strength simulation
@@ -60,4 +62,4 @@ npm run sim     # AI strength simulation
 
 ## How it was made
 
-Built with Devin. A coordinating session wrote the game engine and split the AI and the UI out to two parallel sessions, each delivering a reviewed PR. A third session with no prior context then bug-bashed the finished game. Every PR went through CI and automated review, and every bug fix has a regression test. See [BUGS.md](./BUGS.md).
+Built with Devin. A coordinating session wrote the game engine and split the AI and the UI out to two parallel sessions, each delivering a reviewed PR. A third session with no prior context then bug-bashed the finished game. PRs go through CI and automated review; logic fixes have regression tests, with visual checks and testing gaps called out in [BUGS.md](./BUGS.md).
