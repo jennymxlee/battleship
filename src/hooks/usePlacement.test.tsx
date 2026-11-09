@@ -9,7 +9,7 @@ afterEach(cleanup)
 it('placement rejects bounds and overlap, repositions excluding itself, removes and clears', () => {
   const { result } = renderHook(() => usePlacement(seededRng(1)))
   expect(result.current.isComplete).toBe(false)
-  expect(result.current.preview({ row: 0, col: 9 }).valid).toBe(false)
+  expect(result.current.preview({ row: 0, col: 9 })!.valid).toBe(false)
   act(() => {
     expect(result.current.place({ row: 0, col: 9 })).toBe(false)
   })
@@ -29,7 +29,7 @@ it('placement rejects bounds and overlap, repositions excluding itself, removes 
   expect(result.current.ships[0].origin.col).toBe(1)
   act(() => result.current.select('carrier'))
   act(() => result.current.rotate())
-  expect(result.current.preview({ row: 0, col: 1 }).cells[1]).toEqual({ row: 1, col: 1 })
+  expect(result.current.preview({ row: 0, col: 1 })!.cells[1]).toEqual({ row: 1, col: 1 })
   act(() => result.current.remove())
   expect(result.current.ships).toHaveLength(0)
   act(() => result.current.randomize())

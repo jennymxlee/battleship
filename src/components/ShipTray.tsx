@@ -3,7 +3,7 @@ import type { PlacedShip, ShipId } from '../game'
 
 interface ShipTrayProps {
   ships: PlacedShip[]
-  selected: ShipId
+  selected: ShipId | null
   onSelect: (id: ShipId) => void
 }
 

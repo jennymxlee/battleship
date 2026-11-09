@@ -86,6 +86,7 @@ it('keeps ships unchanged after invalid, off-grid, or cancelled drops', () => {
   drop(battleship)
   clearHover()
   expect(battleship).toHaveTextContent('Awaiting orders')
+  expect(screen.getByRole('status')).toHaveTextContent('Cannot place here')
   const grabbed = cell(0, 2)
   press(grabbed)
   move(grabbed, null)

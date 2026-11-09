@@ -11,19 +11,16 @@ export function PlacementScreen({ rng, onStart }: { rng: Rng; onStart: (ships: P
   const placement = usePlacement(rng)
   const drag = usePlacementDrag(placement)
   const [hover, setHover] = useState<Coord | null>(null)
-  const [message, setMessage] = useState('Select a ship, then choose its starting square.')
   const origin = drag.dragging ? drag.origin : hover
   const preview = origin ? placement.preview(origin) : null
 
   function activate(coord: Coord) {
     const ship = placement.ships.find(s => s.cells.some(c => sameCoord(c, coord)))
-    if (ship && ship.id !== placement.selected) {
+    if (ship) {
       placement.select(ship.id)
-      setMessage(`${ship.name} selected. Choose a new position.`)
       return
     }
-    const placed = placement.place(coord)
-    setMessage(placed ? 'Ship placed.' : 'Cannot place here: overlapping or outside the board.')
+    placement.place(coord)
   }
 
   return (
@@ -32,7 +29,7 @@ export function PlacementScreen({ rng, onStart }: { rng: Rng; onStart: (ships: P
       onKeyDown={event => {
         if (event.key.toLowerCase() !== 'r' || event.ctrlKey || event.metaKey || event.altKey) return
         event.preventDefault()
-        placement.rotate()
+        placement.rotate(!drag.dragging)
       }}
     >
       <p className="eyebrow">02 / Fleet deployment</p>
@@ -52,12 +49,12 @@ export function PlacementScreen({ rng, onStart }: { rng: Rng; onStart: (ships: P
           <h3>Ship manifest</h3>
           <ShipTray ships={placement.ships} selected={placement.selected} onSelect={placement.select} />
           <div className="actions">
-            <button onClick={placement.rotate}>Rotate (R): {placement.orientation}</button>
-            <button onClick={placement.remove}>Remove selected</button>
+            <button onClick={() => placement.rotate(!drag.dragging)}>Rotate (R): {placement.orientation}</button>
+            <button onClick={placement.remove} disabled={!placement.selected}>Remove selected</button>
             <button onClick={placement.randomize}>Randomize</button>
             <button onClick={placement.clear}>Clear</button>
           </div>
-          <p role="status">{message}</p>
+          <p role="status">{placement.message}</p>
           <button
             className="primary"
             disabled={!placement.isComplete}
