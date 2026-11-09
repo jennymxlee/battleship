@@ -5,9 +5,9 @@ export function MoveLog({ entries }: { entries: LogEntry[] }) {
   return (
     <section className="panel move-log">
       <h3>
-        Move log <small> / {entries.length} shots</small>
+        Move log <small> / {entries.length} {entries.length === 1 ? 'shot' : 'shots'}</small>
       </h3>
-      <ol aria-label="Move log">
+      <ol aria-label="Move log" reversed start={entries.length}>
         {[...entries].reverse().map((entry, i) => (
           <li key={entries.length - i}>
             {entry.by === 'player' ? 'You' : 'Enemy'} · {describeMove(entry)}
